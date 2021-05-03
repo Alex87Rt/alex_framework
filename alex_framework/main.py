@@ -1,5 +1,7 @@
 import quopri
 
+from requests import *
+
 
 class PageNotFound404:
     def __call__(self, request):
@@ -7,7 +9,6 @@ class PageNotFound404:
 
 
 class Framework:
-
     """Класс Framework - основа фреймворка"""
 
     def __init__(self, routes_obj, fronts_obj):
@@ -18,9 +19,23 @@ class Framework:
         # получаем адрес, по которому выполнен переход
         path = environ['PATH_INFO']
 
-        # добавление закрывающего слеша
+        # добавление закрывающего /
         if not path.endswith('/'):
             path = f'{path}/'
+
+        request = {}
+        # Получаем все данные запроса
+        method = environ['REQUEST_METHOD']
+        request['method'] = method
+
+        if method == 'POST':
+            data = PostRequests().get_request_params(environ)
+            request['data'] = data
+            print(f'Нам пришёл post-запрос: {Framework.decode_value(data)}')
+        if method == 'GET':
+            request_params = GetRequests().get_request_params(environ)
+            request['request_params'] = request_params
+            print(f'Нам пришли GET-параметры: {request_params}')
 
         # находим нужный контроллер
         # отработка паттерна page controller
@@ -28,7 +43,7 @@ class Framework:
             view = self.routes_lst[path]
         else:
             view = PageNotFound404()
-        request = {}
+
         # наполняем словарь request элементами
         # этот словарь получат все контроллеры
         # отработка паттерна front controller
