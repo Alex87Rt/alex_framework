@@ -1,6 +1,6 @@
 import quopri
 
-from requests import *
+from alex_framework.requests import PostRequests, GetRequests
 
 
 class PageNotFound404:
