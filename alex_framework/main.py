@@ -63,6 +63,7 @@ class Framework:
             new_data[k] = val_decode_str
         return new_data
 
+
 # Новый вид WSGI-application.
 # Первый — логирующий (такой же, как основной,
 # только для каждого запроса выводит информацию
