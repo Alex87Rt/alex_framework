@@ -200,7 +200,7 @@ class StudentMapper:
             result.append(student)
         return result
 
-    def find_by_id(self, id):
+    def find(self, id):
         statement = f"SELECT id, name FROM {self.tablename} WHERE id=?"
         self.cursor.execute(statement, (id,))
         result = self.cursor.fetchone()
