@@ -14,14 +14,14 @@ UnitOfWork.new_current()
 UnitOfWork.get_current().set_mapper_registry(MapperRegistry)
 
 routes = {}
-
+status_code = '200 OK'
 
 # контроллер - главная страница
 @AppRoute(routes=routes, url='/')
 class Index:
     @Debug(name='Index')
     def __call__(self, request):
-        return '200 OK', render('index.html', objects_list=site.categories)
+        return status_code, render('index.html', objects_list=site.categories)
 
 
 # контроллер "О проекте"
@@ -29,7 +29,7 @@ class Index:
 class About:
     @Debug(name='About')
     def __call__(self, request):
-        return '200 OK', render('about.html')
+        return status_code, render('about.html')
 
 
 # контроллер "О работе"
@@ -37,7 +37,7 @@ class About:
 @Debug(name='Work')
 class Work:
     def __call__(self, request):
-        return '200 OK', render('work.html')
+        return status_code, render('work.html')
 
 
 # контроллер 404
@@ -52,7 +52,7 @@ class NotFound404:
 class StudyPrograms:
     @Debug(name='StudyPrograms')
     def __call__(self, request):
-        return '200 OK', render('study-programs.html', data=date.today())
+        return status_code, render('study-programs.html', data=date.today())
 
 
 # контроллер - список курсов
@@ -63,10 +63,10 @@ class CoursesList:
         logger.log('Список курсов')
         try:
             category = site.find_category_by_id(int(request['request_params']['id']))
-            return '200 OK', render('course_list.html', objects_list=category.courses, name=category.name,
+            return status_code, render('course_list.html', objects_list=category.courses, name=category.name,
                                     id=category.id)
         except KeyError:
-            return '200 OK', 'No courses have been added yet'
+            return status_code, 'No courses have been added yet'
 
 
 # контроллер - создать курс
@@ -89,7 +89,7 @@ class CreateCourse:
                 course.observers.append(sms_notifier)
                 site.courses.append(course)
 
-            return '200 OK', render('course_list.html', objects_list=category.courses,
+            return status_code, render('course_list.html', objects_list=category.courses,
                                     name=category.name, id=category.id)
 
         else:
@@ -97,9 +97,9 @@ class CreateCourse:
                 self.category_id = int(request['request_params']['id'])
                 category = site.find_category_by_id(int(self.category_id))
 
-                return '200 OK', render('create_course.html', name=category.name, id=category.id)
+                return status_code, render('create_course.html', name=category.name, id=category.id)
             except KeyError:
-                return '200 OK', 'No categories have been added yet'
+                return status_code, 'No categories have been added yet'
 
 
 # контроллер - создать категорию
@@ -119,10 +119,10 @@ class CreateCategory:
                 category = site.find_category_by_id(int(category_id))
             new_category = site.create_category(name, category)
             site.categories.append(new_category)
-            return '200 OK', render('index.html', objects_list=site.categories)
+            return status_code, render('index.html', objects_list=site.categories)
         else:
             categories = site.categories
-            return '200 OK', render('create_category.html', categories=categories)
+            return status_code, render('create_category.html', categories=categories)
 
 
 # контроллер - список категорий
@@ -131,7 +131,7 @@ class CategoryList:
     @Debug(name='CategoryList')
     def __call__(self, request):
         logger.log('Список категорий')
-        return '200 OK', render('category_list.html', objects_list=site.categories)
+        return status_code, render('category_list.html', objects_list=site.categories)
 
 
 # контроллер - копировать курс
@@ -150,9 +150,9 @@ class CopyCourse:
                 new_course.name = new_name
                 site.courses.append(new_course)
 
-            return '200 OK', render('course_list.html', objects_list=site.courses)
+            return status_code, render('course_list.html', objects_list=site.courses)
         except KeyError:
-            return '200 OK', 'No courses have been added yet'
+            return status_code, 'No courses have been added yet'
 
 
 @AppRoute(routes=routes, url='/student-list/')
@@ -197,4 +197,4 @@ class AddStudentByCourseCreateView(CreateView):
 class CourseApi:
     @Debug(name='CourseApi')
     def __call__(self, request):
-        return '200 OK', BaseSerializer(site.courses).save()
+        return status_code, BaseSerializer(site.courses).save()

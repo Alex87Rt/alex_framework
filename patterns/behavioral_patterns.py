@@ -103,6 +103,11 @@ class CreateView(TemplateView):
         else:
             return super().__call__(request)
 
+class UpdateView(TemplateView):
+    pass
+
+class DeleteView(TemplateView):
+    pass
 
 # поведенческий паттерн - Стратегия
 class ConsoleWriter:
